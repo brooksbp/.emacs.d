@@ -73,4 +73,9 @@
     (if (not (bolp)) (forward-line 1))
     (delete-whitespace-rectangle (point) end nil)))
 
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "google-chrome-beta")
+
+(global-set-key "\C-xm" 'browse-url-at-point)
+
 (provide 'base)
