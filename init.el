@@ -5,8 +5,6 @@
 (require 'init-elpa)
 
 (require 'init-auto-complete)
-(require 'init-helm-gtags)
-(require 'init-smartparens)
 
 (require-package 'clojure-mode)
 (require-package 'd-mode)
