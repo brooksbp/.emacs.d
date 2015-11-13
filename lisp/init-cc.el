@@ -11,5 +11,6 @@
   (set-variable 'indent-tabs-mode nil)
   (google-set-c-style)
   (google-make-newline-indent))
+(add-hook 'c++-mode-hook 'google-cc-mode)
 
 (provide 'init-cc)
