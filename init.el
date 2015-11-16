@@ -11,6 +11,7 @@
 (require-package 'go-mode)
 (require 'init-cc)
 (require 'init-haskell)
+(require-package 'julia-mode)
 (require-package 'js2-mode)
 (require-package 'llvm-mode)
 (require-package 'lua-mode)
