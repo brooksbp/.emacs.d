@@ -1,7 +1,8 @@
 (require-package 'google-c-style)
 
 (defun setup-c-mode ()
-  (set-variable 'indent-tabs-mode t))
+  (set-variable 'indent-tabs-mode t)
+  (c-set-offset 'inextern-lang 0))
 (add-hook 'c-mode-common-hook 'setup-c-mode)
 
 (setq c-default-style "linux")
