@@ -6,6 +6,9 @@
 
 (require 'init-auto-complete)
 
+(require-package 'window-numbering)
+(window-numbering-mode 1)
+
 (require-package 'clojure-mode)
 (require-package 'd-mode)
 (require-package 'go-mode)
