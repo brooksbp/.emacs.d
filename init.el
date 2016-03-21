@@ -4,6 +4,8 @@
 
 (require 'init-elpa)
 
+(require 'init-org)
+
 (require 'init-auto-complete)
 
 (require-package 'window-numbering)
@@ -23,6 +25,9 @@
 (require-package 'rust-mode)
 (require-package 'tuareg)
 (require-package 'yaml-mode)
+(require-package 'scss-mode)
+
+(require-package 'puppet-mode)
 
 (require-package 'elm-mode)
 
