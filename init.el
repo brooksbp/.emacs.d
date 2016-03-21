@@ -24,6 +24,8 @@
 (require-package 'tuareg)
 (require-package 'yaml-mode)
 
+(require-package 'elm-mode)
+
 (require 'init-themes)
 
 (require 'server)
