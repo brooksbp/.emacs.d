@@ -4,7 +4,7 @@
 
 (require 'init-elpa)
 
-(require 'init-org)
+;(require 'init-org)
 
 (require 'init-auto-complete)
 
@@ -31,7 +31,7 @@
 
 (require-package 'elm-mode)
 
-(require 'init-themes)
+;(require 'init-themes)
 
 (require 'server)
 (unless (server-running-p)
