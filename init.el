@@ -1,3 +1,5 @@
+(package-initialize)
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 (require 'base)
@@ -31,7 +33,7 @@
 
 (require-package 'elm-mode)
 
-;(require 'init-themes)
+(require 'init-themes)
 
 (require 'server)
 (unless (server-running-p)
