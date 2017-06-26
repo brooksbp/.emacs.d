@@ -37,7 +37,7 @@
 
 (require-package 'elm-mode)
 
-(require 'init-themes)
+;(require 'init-themes)
 
 (require 'server)
 (unless (server-running-p)
