@@ -4,19 +4,21 @@
 
 ;; Linux
 
-(defun setup-c-mode ()
-  (set-variable 'indent-tabs-mode t)
-  (c-set-offset 'inextern-lang 0))
-(add-hook 'c-mode-common-hook 'setup-c-mode)
-(setq c-default-style "linux")
+;; (defun setup-c-mode ()
+;;   (set-variable 'indent-tabs-mode t)
+;;   (c-set-offset 'inextern-lang 0))
+;; (add-hook 'c-mode-common-hook 'setup-c-mode)
+;; (setq c-default-style "linux")
 
+
+;(setq c-default-style "gnu")
 
 
 ;; Allman
 
-;(setq c-default-style "bsd")
-;(setq c-basic-offset 4)
-;(setq indent-tabs-mode nil)
+(setq c-default-style "bsd")
+(setq c-basic-offset 4)
+(setq indent-tabs-mode nil)
 
 
 
