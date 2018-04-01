@@ -24,12 +24,13 @@
 
 ;; Google
 
-;(defun google-cc-mode ()
-;  (interactive)
-;  (set-variable 'indent-tabs-mode nil)
-;  (google-set-c-style)
-;  (google-make-newline-indent))
-;(add-hook 'c++-mode-hook 'google-cc-mode)
+(defun google-cc-mode ()
+ (interactive)
+ (set-variable 'indent-tabs-mode nil)
+ (google-set-c-style)
+ (google-make-newline-indent))
+(add-hook 'c++-mode-hook 'google-cc-mode)
+(add-hook 'c-mode-common-hook 'google-cc-mode)
 
 
 

@@ -5,6 +5,7 @@
 (package-initialize)
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "~/Bluespec-2017.03.beta1/util/emacs"))
 
 (require 'base)
 
@@ -16,6 +17,10 @@
 
 (require-package 'window-numbering)
 (window-numbering-mode 1)
+
+(autoload 'bsv-mode "bsv-mode" "BSV mode" t )
+(setq auto-mode-alist (cons  '("\\.bsv\\'" . bsv-mode) auto-mode-alist))
+
 
 (require-package 'clojure-mode)
 (require-package 'd-mode)
@@ -35,7 +40,7 @@
 
 (require-package 'puppet-mode)
 
-(require-package 'elm-mode)
+;(require-package 'elm-mode)
 
 ;(require 'init-themes)
 
