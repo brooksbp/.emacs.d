@@ -111,9 +111,27 @@ re-downloaded in order to locate 'package'."
 
 (global-set-key "\C-xm" 'browse-url-at-point)
 
+;;---------------------------------------------------------------------------
 
+(require-package 'auto-complete)
 
-(require 'init-auto-complete)
+(require 'auto-complete-config)
+(ac-config-default)
+
+(setq ac-auto-show-menu nil)
+(setq ac-expand-on-auto-complete t)
+(setq ac-show-menu-immediately-on-auto-complete nil)
+(setq ac-use-quick-help nil)
+(setq ac-auto-start 4)
+(set-default 'ac-sources
+             '(ac-source-dictionary
+               ac-source-yasnippet
+               ac-source-filename
+               ac-source-words-in-all-buffer
+               ac-source-words-in-buffer
+               ac-source-words-in-same-mode-buffers))
+
+;;---------------------------------------------------------------------------
 
 (require-package 'window-numbering)
 (window-numbering-mode 1)
