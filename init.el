@@ -112,7 +112,6 @@ re-downloaded in order to locate 'package'."
 (global-set-key "\C-xm" 'browse-url-at-point)
 
 
-;(require 'init-org)
 
 (require 'init-auto-complete)
 
