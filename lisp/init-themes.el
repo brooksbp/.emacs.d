@@ -1,6 +1,13 @@
 (require-package 'monokai-theme)
-
 (setq-default custom-enabled-themes '(monokai))
+
+;(require-package 'material-theme)
+;(load-theme 'material t)
+;(load-theme 'material-light t)
+
+;(require-package 'moe-theme)
+;(load-theme 'moe-dark t)
+;(load-theme 'moe-light t)
 
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()
