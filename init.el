@@ -1,26 +1,21 @@
-(package-initialize)
+; Adjust garbage collection thresholds
+(setq gc-cons-threshold (* 128 1024 1024))
+(add-hook 'after-init-hook
+          (lambda () (setq gc-cons-threshold (* 20 1024 1024))))
 
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "~/Bluespec-2017.03.beta1/util/emacs"))
+; Save customizations to custom.el instead of this file
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
 
-;;---------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
+;; Packages
 
 (require 'package)
 
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
-
-(when (< emacs-major-version 24)
-  ;; For important compatability libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-
-(setq package-enable-at-startup nil)
-(package-initialize)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
 (defun require-package (package &optional min-version no-refresh)
-  "Install given 'package', optionally requiring 'min-version'.
-If 'no-refresh' is non-nil, the available package lists will not be
-re-downloaded in order to locate 'package'."
   (if (package-installed-p package min-version)
       t
     (if (or (assoc package package-archive-contents) no-refresh)
@@ -29,75 +24,82 @@ re-downloaded in order to locate 'package'."
         (package-refresh-contents)
         (require-package package min-version t)))))
 
-;;---------------------------------------------------------------------------
+(setq package-enable-at-startup nil)
 
-(setq vc-follow-symlinks t)
+(package-initialize)
+
+;;------------------------------------------------------------------------------
+;; Themes
+
+(require-package 'monokai-theme)
+(load-theme 'monokai t)
+
+(require-package 'material-theme)
+;(load-theme 'material t)
+
+;;------------------------------------------------------------------------------
+;; Display
 
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-echo-area-message t)
-
 (setq inhibit-splash-screen t)
 
 (menu-bar-mode -1)
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'set-scroll-bar-mode)
-  (set-scroll-bar-mode -1))
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 
-;; Suppress all dialog boxes.
 (setq use-dialog-box nil)
 
-(setq-default
- column-number-mode t
- line-number-mode t
- visible-bell t)
+(fset 'yes-or-no-p 'y-or-n-p)
 
-;; If enabled, inserting text while the mark is active causes the text to
-;; be deleted first. This also deactivates the mark.
-(setq-default delete-selection-mode t)
+(setq line-number-mode t)
+(setq column-number-mode t)
 
-(setq-default make-backup-files nil)
-(setq-default auto-save-default nil)
+; Flash the screen instead of making an audible ding
+(setq visibile-bell t)
 
-(setq-default indent-tabs-mode nil)
-
-;; Searching case-sensitivity
-(setq-default case-fold-search t)
-
-(setq-default show-trailing-whitespace t)
-
-(setq-default
- truncate-lines nil
- truncate-partial-width-windows nil)
+; Turn on line wrapping
+(setq-default truncate-lines nil)
+(setq-default truncate-partial-width-windows nil)
 
 (global-font-lock-mode t)
 (setq font-lock-maximum-decoration t)
 
-(fset 'yes-or-no-p 'y-or-n-p)
-
-(when (fboundp 'electric-pair-mode)
-  (electric-pair-mode))
-(when (fboundp 'electric-indent-mode)
-  (electric-indent-mode))
-
-;; Enable paren match highlighting
+; Highlight matching delimiters
 (show-paren-mode 1)
 
-;; Display the current function name in the mode line.
+(setq-default show-trailing-whitespace t)
+
+; Display the current function name in the mode line
 (which-function-mode 1)
+
+(require-package 'window-numbering)
+(window-numbering-mode 1)
+
+; Enable Auto-Revert mode to continuously display changes made to a file
+; by other programs, e.g. to 'tail' a file.
+(global-auto-revert-mode)
+(setq global-auto-revert-none-file-buffers t)
+(setq auto-revert-verbose nil)
+
+;;------------------------------------------------------------------------------
+;; Editing
+
+(setq-default make-backup-files nil)
+(setq-default auto-save-default nil)
+
+; Spaces instead of tabs
+(setq-default indent-tabs-mode nil)
+
+; Automatically insert matching delimiters
+(when (fboundp 'electric-pair-mode)
+  (electric-pair-mode))
+
+; Inserting text while the mark is active causes selected text to be deleted first
+(setq-default delete-selection-mode t)
 
 (global-set-key (kbd "C-c c") 'comment-region)
 (global-set-key (kbd "C-c u") 'uncomment-region)
-
-;; Enable Auto-Revert mode to continuously display changes made to a file
-;; by other programs, e.g. to 'tail' a file.
-(global-auto-revert-mode)
-(setq global-auto-revert-none-file-buffers t
-      auto-revert-verbose nil)
-
-(setq-default
- ediff-split-window-function 'split-window-horizontally
- ediff-window-setup-function 'ediff-setup-windows-plain)
 
 (defun delete-leading-whitespace (start end)
   "Delete whitespace at the beginning of each line in region."
@@ -106,12 +108,31 @@ re-downloaded in order to locate 'package'."
     (if (not (bolp)) (forward-line 1))
     (delete-whitespace-rectangle (point) end nil)))
 
-(setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "google-chrome-beta")
+;;------------------------------------------------------------------------------
+;; Search
 
-(global-set-key "\C-xm" 'browse-url-at-point)
+; Case-insensitive search
+(setq-default case-fold-search t)
+
+(require-package 'anzu)
+(global-anzu-mode +1)
+
+;;------------------------------------------------------------------------------
+;; VCS
+
+(setq vc-follow-symlinks t)
+
+(require-package 'gitignore-mode)
+(require-package 'gitconfig-mode)
+
+;;------------------------------------------------------------------------------
+;; Ediff
+
+(setq-default ediff-split-window-function 'split-window-horizontally)
+(setq-default ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;;---------------------------------------------------------------------------
+;; Autocomplete
 
 (require-package 'auto-complete)
 
@@ -133,22 +154,44 @@ re-downloaded in order to locate 'package'."
 
 ;;---------------------------------------------------------------------------
 
-(require-package 'window-numbering)
-(window-numbering-mode 1)
+(require-package 'move-dup)
+
+(global-set-key (kbd "C-<up>") 'md/move-lines-up)
+(global-set-key (kbd "C-<down>") 'md/move-lines-down)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require-package 'markdown-mode)
+(require-package 'yaml-mode)
+
+(require-package 'dockerfile-mode)
+
+;;------------------------------------------------------------------------------
+;; Bluespec
+
+(add-to-list 'load-path (expand-file-name "~/Bluespec-2017.03.beta1/util/emacs"))
 
 (autoload 'bsv-mode "bsv-mode" "BSV mode" t )
 (setq auto-mode-alist (cons  '("\\.bsv\\'" . bsv-mode) auto-mode-alist))
 
+;;------------------------------------------------------------------------------
+;; C languages
 
-;(require-package 'clojure-mode)
-;(require-package 'd-mode)
-(require-package 'go-mode)
+; gnu
 
-;;---------------------------------------------------------------------------
+;; (setq c-default-style "gnu")
 
-;(require-package 'google-c-style)
+; k&r
 
-;; Linux
+(setq c-default-style "k&r")
+(setq c-basic-offset 4)
+
+; Allman
+
+;; (setq c-default-style "bsd")
+;; (setq c-basic-offset 4)
+
+; Linux
 
 ;; (defun setup-c-mode ()
 ;;   (set-variable 'indent-tabs-mode t)
@@ -156,89 +199,78 @@ re-downloaded in order to locate 'package'."
 ;; (add-hook 'c-mode-common-hook 'setup-c-mode)
 ;; (setq c-default-style "linux")
 
-;(setq c-default-style "gnu")
+; Google
 
-;; Allman
+;; (require-package 'google-c-style)
+;; (add-hook 'c-mode-common-hook 'google-set-c-style)
 
-(setq c-default-style "bsd")
-(setq c-basic-offset 4)
-(setq indent-tabs-mode nil)
+;;------------------------------------------------------------------------------
+;; Go
 
-;; Google
+(require-package 'go-mode)
 
-;; (defun google-cc-mode ()
-;;  (interactive)
-;;  (set-variable 'indent-tabs-mode nil)
-;;  (google-set-c-style)
-;;  (google-make-newline-indent))
-;; (add-hook 'c++-mode-hook 'google-cc-mode)
-;; (add-hook 'c-mode-common-hook 'google-cc-mode)
-
-;;---------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
+;; Haskell
 
 (require-package 'haskell-mode)
 
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 
-;;---------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
+;; Javascript
 
-;(require-package 'julia-mode)
-;(require-package 'js2-mode)
-;(require-package 'lua-mode)
-;(require-package 'markdown-mode)
-;(require-package 'racket-mode)
-;(require-package 'rust-mode)
-;(require-package 'tuareg)
-;(require-package 'yaml-mode)
-;(require-package 'scss-mode)
+(require-package 'json-mode)
+(require-package 'js2-mode)
+(require-package 'coffee-mode)
+(require-package 'typescript-mode)
 
-;(require-package 'puppet-mode)
+;;------------------------------------------------------------------------------
+;; Python
 
-;(require-package 'elm-mode)
+(require-package 'pip-requirements)
 
-;;---------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
+;; Lua
 
-(require-package 'monokai-theme)
-(setq-default custom-enabled-themes '(monokai))
+(require-package 'lua-mode)
 
-;(require-package 'material-theme)
-;(load-theme 'material t)
-;(load-theme 'material-light t)
+;;------------------------------------------------------------------------------
+;; Racket
 
-;(require-package 'moe-theme)
-;(load-theme 'moe-dark t)
-;(load-theme 'moe-light t)
+(require-package 'racket-mode)
 
-;; Ensure that themes will be applied even if they have not been customized
-(defun reapply-themes ()
-  "Forcibly load the themes listed in `custom-enabled-themes'."
-  (dolist (theme custom-enabled-themes)
-    (unless (custom-theme-p theme)
-      (load-theme theme)))
-  (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
+;;------------------------------------------------------------------------------
+;; Rust
 
-(add-hook 'after-init-hook 'reapply-themes)
+(require-package 'rust-mode)
 
-;;---------------------------------------------------------------------------
+;;------------------------------------------------------------------------------
+;; OCaml
+
+(require-package 'tuareg)
+
+;;------------------------------------------------------------------------------
+;; OCaml
+
+(require-package 'erlang)
+
+;;------------------------------------------------------------------------------
+;; HTML
+
+(require-package 'tagedit)
+
+;;------------------------------------------------------------------------------
+;; CSS
+
+(require-package 'mmm-mode)
+(require-package 'sass-mode)
+(require-package 'scss-mode)
+(require-package 'less-css-mode)
+
+;;------------------------------------------------------------------------------
 
 (require 'server)
 (unless (server-running-p)
   (server-start))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (monokai)))
- '(custom-safe-themes
-   (quote
-    ("c3d4af771cbe0501d5a865656802788a9a0ff9cf10a7df704ec8b8ef69017c68" default)))
- '(package-selected-packages
-   (quote
-    (haskell-mode window-numbering monokai-theme moe-theme material-theme go-mode auto-complete))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+;;------------------------------------------------------------------------------
