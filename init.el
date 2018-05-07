@@ -196,7 +196,30 @@ re-downloaded in order to locate 'package'."
 
 ;(require-package 'elm-mode)
 
-(require 'init-themes)
+;;---------------------------------------------------------------------------
+
+(require-package 'monokai-theme)
+(setq-default custom-enabled-themes '(monokai))
+
+;(require-package 'material-theme)
+;(load-theme 'material t)
+;(load-theme 'material-light t)
+
+;(require-package 'moe-theme)
+;(load-theme 'moe-dark t)
+;(load-theme 'moe-light t)
+
+;; Ensure that themes will be applied even if they have not been customized
+(defun reapply-themes ()
+  "Forcibly load the themes listed in `custom-enabled-themes'."
+  (dolist (theme custom-enabled-themes)
+    (unless (custom-theme-p theme)
+      (load-theme theme)))
+  (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
+
+(add-hook 'after-init-hook 'reapply-themes)
+
+;;---------------------------------------------------------------------------
 
 (require 'server)
 (unless (server-running-p)
@@ -206,9 +229,13 @@ re-downloaded in order to locate 'package'."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes (quote (monokai)))
  '(custom-safe-themes
    (quote
-    ("c3d4af771cbe0501d5a865656802788a9a0ff9cf10a7df704ec8b8ef69017c68" default))))
+    ("c3d4af771cbe0501d5a865656802788a9a0ff9cf10a7df704ec8b8ef69017c68" default)))
+ '(package-selected-packages
+   (quote
+    (haskell-mode window-numbering monokai-theme moe-theme material-theme go-mode auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
