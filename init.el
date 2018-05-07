@@ -176,7 +176,12 @@ re-downloaded in order to locate 'package'."
 
 ;;---------------------------------------------------------------------------
 
-;(require 'init-haskell)
+(require-package 'haskell-mode)
+
+(add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+
+;;---------------------------------------------------------------------------
+
 ;(require-package 'julia-mode)
 ;(require-package 'js2-mode)
 ;(require-package 'lua-mode)
