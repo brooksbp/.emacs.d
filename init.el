@@ -169,7 +169,7 @@
 ;;------------------------------------------------------------------------------
 ;; Bluespec
 
-(add-to-list 'load-path (expand-file-name "~/Bluespec-2017.03.beta1/util/emacs"))
+(add-to-list 'load-path (expand-file-name "~/bluespec/Bluespec-2017.03.beta1/util/emacs"))
 
 (autoload 'bsv-mode "bsv-mode" "BSV mode" t )
 (setq auto-mode-alist (cons  '("\\.bsv\\'" . bsv-mode) auto-mode-alist))
