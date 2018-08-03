@@ -183,8 +183,8 @@
 
 ; k&r
 
-(setq c-default-style "k&r")
-(setq c-basic-offset 4)
+;; (setq c-default-style "k&r")
+;; (setq c-basic-offset 4)
 
 ; Allman
 
@@ -193,11 +193,13 @@
 
 ; Linux
 
-;; (defun setup-c-mode ()
-;;   (set-variable 'indent-tabs-mode t)
-;;   (c-set-offset 'inextern-lang 0))
-;; (add-hook 'c-mode-common-hook 'setup-c-mode)
-;; (setq c-default-style "linux")
+(defun setup-c-mode ()
+  (set-variable 'indent-tabs-mode t)
+  (c-set-offset 'inextern-lang 0))
+(add-hook 'c-mode-common-hook 'setup-c-mode)
+(setq c-default-style "linux")
+
+(require-package 'dts-mode)
 
 ; Google
 
