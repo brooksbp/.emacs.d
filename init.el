@@ -15,6 +15,10 @@
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
+;; Work-around for https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341
+(when (and (version< emacs-version "26.3") (boundp 'libgnutls-version) (>= libgnutls-version 30604))
+  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+
 (defun require-package (package &optional min-version no-refresh)
   (if (package-installed-p package min-version)
       t
