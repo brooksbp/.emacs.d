@@ -126,8 +126,7 @@
 
 (setq vc-follow-symlinks t)
 
-(require-package 'gitignore-mode)
-(require-package 'gitconfig-mode)
+(require-package 'git-modes)
 
 ;;------------------------------------------------------------------------------
 ;; Ediff
