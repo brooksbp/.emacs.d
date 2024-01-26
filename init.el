@@ -1,7 +1,8 @@
-; Adjust garbage collection thresholds
-(setq gc-cons-threshold (* 128 1024 1024))
+; Avoid garbage collection during init
+(setq gc-cons-threshold-saved gc-cons-threshold)
+(setq gc-cons-threshold most-positive-fixnum)
 (add-hook 'after-init-hook
-          (lambda () (setq gc-cons-threshold (* 20 1024 1024))))
+          (lambda () (setq gc-cons-threshold gc-cons-threshold-saved)))
 
 ; Save customizations to custom.el instead of this file
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -37,15 +38,6 @@ re-downloaded in order to locate PACKAGE."
             (package-refresh-contents)
             (require-package package min-version t)))
         (package-installed-p package min-version))))
-
-;; (defun require-package (package &optional min-version no-refresh)
-;;   (if (package-installed-p package min-version)
-;;       t
-;;     (if (or (assoc package package-archive-contents) no-refresh)
-;;         (package-install package)
-;;       (progn
-;;         (package-refresh-contents)
-;;         (require-package package min-version t)))))
 
 (setq package-enable-at-startup nil)
 
@@ -141,13 +133,6 @@ re-downloaded in order to locate PACKAGE."
 (global-anzu-mode +1)
 
 ;;------------------------------------------------------------------------------
-;; VCS
-
-(setq vc-follow-symlinks t)
-
-(require-package 'git-modes)
-
-;;------------------------------------------------------------------------------
 ;; Ediff
 
 (setq-default ediff-split-window-function 'split-window-horizontally)
@@ -183,13 +168,11 @@ re-downloaded in order to locate PACKAGE."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require-package 'markdown-mode)
-(require-package 'yaml-mode)
+(setq vc-follow-symlinks t)
 
-(require-package 'dockerfile-mode)
+(require-package 'git-modes)
 
 ;;------------------------------------------------------------------------------
-;; Bluespec
 
 (add-to-list 'load-path (expand-file-name "~/bluespec/Bluespec-2017.03.beta1/util/emacs"))
 
@@ -197,7 +180,6 @@ re-downloaded in order to locate PACKAGE."
 (setq auto-mode-alist (cons  '("\\.bsv\\'" . bsv-mode) auto-mode-alist))
 
 ;;------------------------------------------------------------------------------
-;; Verilog / SystemVerilog
 
 (require-package 'verilog-mode "2023.6.6")
 
@@ -220,95 +202,61 @@ re-downloaded in order to locate PACKAGE."
 ;; (setq verilog-auto-lineup nil)
 
 ;;------------------------------------------------------------------------------
-;; C languages
-
-; gnu
 
 ;; (setq c-default-style "gnu")
 
-; k&r
-
 ;; (setq c-default-style "k&r")
 ;; (setq c-basic-offset 4)
-
-; Allman
 
 ;; (setq c-default-style "bsd")
 ;; (setq c-basic-offset 4)
 
 ; Linux
-
 (defun setup-c-mode ()
   (set-variable 'indent-tabs-mode t)
   (c-set-offset 'inextern-lang 0))
 (add-hook 'c-mode-common-hook 'setup-c-mode)
 (setq c-default-style "linux")
 
-(require-package 'dts-mode)
-
-; Google
-
-;; (require-package 'google-c-style)
+(require-package 'google-c-style)
 ;; (add-hook 'c-mode-common-hook 'google-set-c-style)
 
 ;;------------------------------------------------------------------------------
-;; Go
+
+(unless (version< emacs-version "28.1")
+  (require-package 'bazel))
+
+(require-package 'cmake-mode)
+
+(require-package 'dockerfile-mode)
+
+(require-package 'dts-mode)
+
+(require-package 'markdown-mode)
+
+(require-package 'rust-mode)
+(require-package 'cargo)
+
+(require-package 'python-mode)
+(require-package 'pip-requirements)
 
 (require-package 'go-mode)
 
-;;------------------------------------------------------------------------------
-;; Haskell
-
 (require-package 'haskell-mode)
-
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
-
-;;------------------------------------------------------------------------------
-;; Javascript
-
-(require-package 'json-mode)
-(require-package 'js2-mode)
-(require-package 'coffee-mode)
-(require-package 'typescript-mode)
-
-;;------------------------------------------------------------------------------
-;; Python
-
-(require-package 'pip-requirements)
-
-;;------------------------------------------------------------------------------
-;; Lua
-
-(require-package 'lua-mode)
-
-;;------------------------------------------------------------------------------
-;; Racket
 
 (require-package 'racket-mode)
 
-;;------------------------------------------------------------------------------
-;; Rust
+(require-package 'tuareg)  ; OCaml
 
-(require-package 'rust-mode)
+(require-package 'json-mode)
+(require-package 'yaml-mode)
 
-;;------------------------------------------------------------------------------
-;; OCaml
-
-(require-package 'tuareg)
-
-;;------------------------------------------------------------------------------
-;; OCaml
-
-(require-package 'erlang)
-
-;;------------------------------------------------------------------------------
-;; HTML
+(require-package 'js2-mode)
+(require-package 'typescript-mode)
+(require-package 'web-mode)
 
 (require-package 'tagedit)
-
-;;------------------------------------------------------------------------------
-;; CSS
-
 (require-package 'mmm-mode)
 (require-package 'sass-mode)
 (require-package 'scss-mode)
@@ -319,5 +267,3 @@ re-downloaded in order to locate PACKAGE."
 (require 'server)
 (unless (server-running-p)
   (server-start))
-
-;;------------------------------------------------------------------------------
