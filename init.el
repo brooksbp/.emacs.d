@@ -20,13 +20,32 @@
   (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 
 (defun require-package (package &optional min-version no-refresh)
-  (if (package-installed-p package min-version)
-      t
-    (if (or (assoc package package-archive-contents) no-refresh)
-        (package-install package)
-      (progn
-        (package-refresh-contents)
-        (require-package package min-version t)))))
+  "Install given PACKAGE, optionally requiring MIN-VERSION.
+If NO-REFRESH is non-nil, the available package lists will not be
+re-downloaded in order to locate PACKAGE."
+  (when (stringp min-version)
+    (setq min-version (version-to-list min-version)))
+  (or (package-installed-p package min-version)
+      (let* ((known (cdr (assoc package package-archive-contents)))
+             (best (car (sort known (lambda (a b)
+                                      (version-list-<= (package-desc-version b)
+                                                       (package-desc-version a)))))))
+        (if (and best (version-list-<= min-version (package-desc-version best)))
+            (package-install best)
+          (if no-refresh
+              (error "No version of %s >= %S is available" package min-version)
+            (package-refresh-contents)
+            (require-package package min-version t)))
+        (package-installed-p package min-version))))
+
+;; (defun require-package (package &optional min-version no-refresh)
+;;   (if (package-installed-p package min-version)
+;;       t
+;;     (if (or (assoc package package-archive-contents) no-refresh)
+;;         (package-install package)
+;;       (progn
+;;         (package-refresh-contents)
+;;         (require-package package min-version t)))))
 
 (setq package-enable-at-startup nil)
 
@@ -176,6 +195,29 @@
 
 (autoload 'bsv-mode "bsv-mode" "BSV mode" t )
 (setq auto-mode-alist (cons  '("\\.bsv\\'" . bsv-mode) auto-mode-alist))
+
+;;------------------------------------------------------------------------------
+;; Verilog / SystemVerilog
+
+(require-package 'verilog-mode "2023.6.6")
+
+(setq verilog-indent-lists nil)
+(setq verilog-indent-level 2)
+(setq verilog-indent-level-module 2)
+(setq verilog-indent-level-declaration 2)
+(setq verilog-indent-level-behavioral 2)
+(setq verilog-indent-level-directive 2)
+(setq verilog-indent-begin-after-if nil)
+(setq verilog-indent-class-inside-pkg t)
+(setq verilog-indent-declaration-macros nil)
+(setq verilog-case-fold nil)
+(setq verilog-case-indent 2)
+(setq verilog-cexp-indent 2)
+(setq verilog-auto-newline nil)
+(setq verilog-auto-indent-on-newline t)
+(setq verilog-tab-always-indent t)
+(setq verilog-auto-endcomments nil)
+;; (setq verilog-auto-lineup nil)
 
 ;;------------------------------------------------------------------------------
 ;; C languages
