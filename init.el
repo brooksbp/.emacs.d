@@ -228,11 +228,15 @@ re-downloaded in order to locate PACKAGE."
 
 (require-package 'cmake-mode)
 
-(require-package 'dockerfile-mode)
-
 (require-package 'dts-mode)
 
+(require-package 'bison-mode)
+(add-to-list 'auto-mode-alist '("\\.yy\\'" . bison-mode))
+(add-to-list 'auto-mode-alist '("\\.ll\\'" . flex-mode))
+
 (require-package 'markdown-mode)
+
+(require-package 'dockerfile-mode)
 
 (require-package 'rust-mode)
 (require-package 'cargo)
