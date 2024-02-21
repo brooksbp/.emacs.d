@@ -80,6 +80,9 @@ re-downloaded in order to locate PACKAGE."
 (global-font-lock-mode t)
 (setq font-lock-maximum-decoration t)
 
+(when (eq system-type 'windows-nt)
+ (set-face-attribute 'default nil :family "Consolas" :height 80))
+
 ; Highlight matching delimiters
 (show-paren-mode 1)
 
