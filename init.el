@@ -1,11 +1,12 @@
-; Avoid garbage collection during init
-(setq gc-cons-threshold-saved gc-cons-threshold)
+; Avoid garbage collection during init.
 (setq gc-cons-threshold most-positive-fixnum)
+; Set it to a large value per lsp-mode recommendation.
 (add-hook 'after-init-hook
-          (lambda () (setq gc-cons-threshold gc-cons-threshold-saved)))
+          (lambda () (setq gc-cons-threshold (* 100 1024 1024))))
 
-; Save customizations to custom.el instead of this file
+; Save customizations to custom.el instead of this file.
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+; Load custom.el if it exists.. but we .gitignore it anyways.
 (when (file-exists-p custom-file)
   (load custom-file))
 
@@ -104,6 +105,7 @@ re-downloaded in order to locate PACKAGE."
 ;; Editing
 
 (setq-default make-backup-files nil)
+(setq-default create-lockfiles nil)
 (setq-default auto-save-default nil)
 
 ; Spaces instead of tabs
@@ -142,25 +144,19 @@ re-downloaded in order to locate PACKAGE."
 (setq-default ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;;---------------------------------------------------------------------------
-;; Autocomplete
+;; Text auto completion
 
-(require-package 'auto-complete)
+(require-package 'company)
+(global-company-mode)
+(setq-default company-minimum-prefix-length 2)
+(setq-default company-tooltip-limit 8)
 
-(require 'auto-complete-config)
-(ac-config-default)
+(require-package 'lsp-mode)
+; Increase the amount of data that Emacs reads from another process.
+; See https://github.com/emacs-lsp/lsp-mode/discussions/3561
+(setq read-process-output-max (* 64 1024))
 
-(setq ac-auto-show-menu nil)
-(setq ac-expand-on-auto-complete t)
-(setq ac-show-menu-immediately-on-auto-complete nil)
-(setq ac-use-quick-help nil)
-(setq ac-auto-start 4)
-(set-default 'ac-sources
-             '(ac-source-dictionary
-               ac-source-yasnippet
-               ac-source-filename
-               ac-source-words-in-all-buffer
-               ac-source-words-in-buffer
-               ac-source-words-in-same-mode-buffers))
+; TODO: Install language servers
 
 ;;---------------------------------------------------------------------------
 
@@ -261,6 +257,7 @@ re-downloaded in order to locate PACKAGE."
 
 (require-package 'js2-mode)
 (require-package 'typescript-mode)
+(require-package 'npm-mode)
 (require-package 'web-mode)
 
 (require-package 'tagedit)
@@ -268,6 +265,11 @@ re-downloaded in order to locate PACKAGE."
 (require-package 'sass-mode)
 (require-package 'scss-mode)
 (require-package 'less-css-mode)
+
+(require-package 'proof-general)
+(require-package 'company-coq)
+
+(require-package 'zig-mode)
 
 ;;------------------------------------------------------------------------------
 
